@@ -1,6 +1,7 @@
 <template id="top">
 <div>
-  <button @click="exportOpenOmniplan">Execute applescript</button>
+  <button @click="exportOpenOmniplan">Export Open OmniPlan To Air Table</button>
+  <button @click="importAirTableToOpenOmniplan">Import AirTable to open omniPlan</button>
   <select-project v-if="showModal" @close="updateAirTable" :projects="projects"></select-project>
   </div>
 </template>
@@ -43,6 +44,7 @@ export default {
           V.parseCSV('./tmp/temp.csv').then(
             data => {
               V.omniData = data;
+              console.log(data);
               V.getProjectFromUser();
             },
             err => {
@@ -54,6 +56,9 @@ export default {
           dialog.showErrorBox('OmniPlan Export Error', err.message);
         },
       );
+    },
+    importAirTableToOpenOmniplan() {
+      alert('NOT IMPLEMENTED YET');
     },
     runAppleScript(script) {
       return new Promise((resolve, reject) => {
@@ -85,8 +90,9 @@ export default {
         .all()
         .then(
           results => {
+            console.log(results);
             results.forEach(v => {
-              V.projects.push(v.fields.Name);
+              V.projects.push(v);
             });
             V.showModal = true;
           },
@@ -98,37 +104,66 @@ export default {
     updateAirTable(project) {
       const V = this;
       V.showModal = false;
+      project = JSON.parse(project);
+      console.log(project);
 
       base('Tasks')
         .select({
-          filterByFormula: `{Project} = "${project}"`,
+          filterByFormula: `{Project} = "${project.fields.Name}"`,
         })
         .all()
         .then(
           results => {
-            console.log(results);
+            results.forEach(val => {
+              // eslint-disable-next-line
+              let found = V.omniData.find(el => {
+                return el.Title === val.fields.Name;
+              });
+              if (!found) {
+                console.log('not foun');
+                console.log(val);
+                base('Tasks').destroy(val.id, (err, deletedRecord) => {
+                  if (err) {
+                    console.error(err);
+                    return;
+                  }
+                  console.log('Deleted record', deletedRecord.id);
+                });
+              }
+            });
+
             V.omniData.forEach(val => {
-              if (
-                // eslint-disable-next-line
-                results.find(el => {
-                  return el.Name === val.Title;
-                })
-              ) {
+              // eslint-disable-next-line
+              let task = results.find(el => {
+                return el.fields.Name === val.Title;
+              });
+              if (task) {
                 console.log('FOUND');
+                console.log(task);
               } else {
-                base('Tasks').create(
-                  {
+                let newTask;
+                if (val.Assigned === '') {
+                  newTask = {
                     Name: val.Title,
                     Due: '2017-11-10',
-                    Project: project,
-                  },
-                  (err, record) => {
-                    if (err) console.error(err);
-                    else {
-                      console.log(record);
-                    }
-                  },
-                );
+                    Project: [project.id],
+                    Assignee: [],
+                  };
+                } else {
+                  console.log(val.Assigned);
+                  newTask = {
+                    Name: val.Title,
+                    Due: '2017-11-10',
+                    Project: [project.id],
+                    Assignee: val.Assigned.split('; '),
+                  };
+                }
+                base('Tasks').create(newTask, (err, record) => {
+                  if (err) console.error(err);
+                  else {
+                    console.log(record);
+                  }
+                });
               }
             });
           },
@@ -136,15 +171,18 @@ export default {
             console.error(err);
           },
         );
-      console.log(project);
-      console.log(V.omniData);
     },
   },
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 #top {
   background: #2f2f2f;
+}
+
+button {
+  padding: 5px;
+  margin: 25px;
 }
 </style>

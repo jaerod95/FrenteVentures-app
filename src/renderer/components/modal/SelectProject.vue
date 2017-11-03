@@ -12,7 +12,7 @@
 
           <div class="modal-body">
           <select id="project-selected">
-            <option v-for="project in projects" :key="project" :value="project">{{project}}</option>
+            <option v-for="project in projects" :key="project.fields.Name" :value="JSON.stringify(project)">{{project.fields.Name}}</option>
             </select>
           </div>
 
@@ -36,6 +36,7 @@ export default {
   methods: {
     close() {
       const project = document.getElementById('project-selected').value;
+      console.log(project);
       this.$emit('close', project);
     },
   },
