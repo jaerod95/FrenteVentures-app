@@ -3,6 +3,37 @@
   <button @click="exportOpenOmniplan">Export Open OmniPlan To Air Table</button>
   <button @click="importAirTableToOpenOmniplan">Import AirTable to open omniPlan</button>
   <select-project v-if="showModal" @close="updateAirTable" :projects="projects"></select-project>
+      <div class="title">Information</div>
+    <div class="items">
+      <div class="item">
+        <div class="name">Path:</div>
+        <div class="value">{{ path }}</div>
+      </div>
+      <div class="item">
+        <div class="name">Route Name:</div>
+        <div class="value">{{ name }}</div>
+      </div>
+      <div class="item">
+        <div class="name">Vue.js:</div>
+        <div class="value">{{ vue }}</div>
+      </div>
+      <div class="item">
+        <div class="name">Electron:</div>
+        <div class="value">{{ electron }}</div>
+      </div>
+      <div class="item">
+        <div class="name">Node:</div>
+        <div class="value">{{ node }}</div>
+      </div>
+      <div class="item">
+        <div class="name">Platform:</div>
+        <div class="value">{{ platform }}</div>
+      </div>
+            <div class="item">
+        <div class="name">App Version:</div>
+        <div class="value">{{ app_version }}</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -28,6 +59,13 @@ export default {
       showModal: false,
       projects: [],
       omniData: {},
+      electron: process.versions['atom-shell'],
+      name: 'landing-page',
+      node: process.versions.node,
+      path: '/',
+      platform: require('os').platform(),
+      vue: require('vue/package.json').version,
+      app_version: require('@/../../package.json').version,
     };
   },
   methods: {
