@@ -1,5 +1,5 @@
 import path from 'path';
-
+// lol
 export function scriptExportOpenOmniplan(p) {
   return `
 activate application "OmniPlan"

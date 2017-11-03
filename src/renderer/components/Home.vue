@@ -120,7 +120,7 @@ export default {
                 return el.Title === val.fields.Name;
               });
               if (!found) {
-                console.log('not foun');
+                console.log('not found');
                 console.log(val);
                 base('Tasks').destroy(val.id, (err, deletedRecord) => {
                   if (err) {
@@ -141,22 +141,16 @@ export default {
                 console.log('FOUND');
                 console.log(task);
               } else {
-                let newTask;
-                if (val.Assigned === '') {
-                  newTask = {
-                    Name: val.Title,
-                    Due: '2017-11-10',
-                    Project: [project.id],
-                    Assignee: [],
-                  };
-                } else {
+                const date = val.End.split('/');
+                const newTask = {
+                  Name: val.Title,
+                  Due: `20${date[2]}-${date[0]}-${date[1]}`,
+                  Project: [project.id],
+                  Completed: parseInt(val['%Done'].split('%')[0], 10),
+                };
+                if (val.Assigned !== '') {
                   console.log(val.Assigned);
-                  newTask = {
-                    Name: val.Title,
-                    Due: '2017-11-10',
-                    Project: [project.id],
-                    Assignee: val.Assigned.split('; '),
-                  };
+                  newTask.Assignee = val.Assigned.split('; ');
                 }
                 base('Tasks').create(newTask, (err, record) => {
                   if (err) console.error(err);
