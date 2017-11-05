@@ -5,11 +5,13 @@
 </template>
 
 <script>
-  export default {
-    name: 'fv',
-  };
+export default {
+  name: 'fv',
+};
 </script>
 
 <style>
-  /* CSS */
+body {
+  background: #eee;
+}
 </style>

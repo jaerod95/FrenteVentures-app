@@ -29,15 +29,20 @@
         <div class="name">Platform:</div>
         <div class="value">{{ platform }}</div>
       </div>
-            <div class="item">
+      <div class="item">
         <div class="name">App Version:</div>
         <div class="value">{{ app_version }}</div>
+      </div>
+      <div class="item">
+        <div class="name">Dev Type:</div>
+        <div class="value">{{ dev_type }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { ipcRenderer } from 'electron'; // eslint-disable-line
 import applescript from 'applescript';
 import * as csvParser from 'csv-parse';
 import airtable from 'airtable';
@@ -46,6 +51,12 @@ import * as scripts from '@/assets/scripts';
 
 // eslint-disable-next-line
 const { dialog } = require('electron').remote;
+
+ipcRenderer.on('message', (event, text) => {
+  console.log('Message from updater: ', text);
+});
+
+// Configure Airtable //
 
 airtable.configure({
   endpointUrl: 'https://api.airtable.com',
@@ -66,6 +77,7 @@ export default {
       platform: require('os').platform(),
       vue: require('vue/package.json').version,
       app_version: require('@/../../package.json').version,
+      dev_type: process.env.NODE_ENV,
     };
   },
   methods: {
@@ -209,10 +221,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-#top {
-  background: #2f2f2f;
-}
-
 button {
   padding: 5px;
   margin: 25px;

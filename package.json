@@ -1,6 +1,6 @@
 {
   "name": "frente-ventures",
-  "version": "0.1.2",
+  "version": "0.1.1",
   "author": "Jason Rodriguez <jason.eli.rodriguez@gmail.com>",
   "description": "fv-app",
   "license": null,
@@ -12,15 +12,11 @@
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
     "dev": "node .electron-vue/dev-runner.js",
     "e2e": "npm run pack && mocha test/e2e",
-    "lint":
-      "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter src test",
-    "lint:fix":
-      "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src test",
+    "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter src test",
+    "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src test",
     "pack": "npm run pack:main && npm run pack:renderer",
-    "pack:main":
-      "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
-    "pack:renderer":
-      "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
+    "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
+    "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
     "test": "npm run unit && npm run e2e",
     "unit": "karma start test/unit/karma.conf.js",
     "postinstall": "npm run lint:fix",
@@ -33,10 +29,11 @@
       "output": "build"
     },
     "publish": {
-      "provider": "github",
-      "token": "d8fad4950ec59f8168ac298e1aac73900beed24f"
+      "provider": "github"
     },
-    "files": ["dist/electron/**/*"],
+    "files": [
+      "dist/electron/**/*"
+    ],
     "dmg": {
       "contents": [
         {
@@ -67,6 +64,7 @@
     "applescript": "^1.0.0",
     "axios": "^0.16.1",
     "csv-parse": "^2.0.0",
+    "electron-log": "^2.2.11",
     "electron-updater": "^2.15.0",
     "vue": "^2.3.3",
     "vue-electron": "^1.0.6",
@@ -93,10 +91,10 @@
     "devtron": "^1.4.0",
     "electron": "^1.7.5",
     "electron-builder": "^19.19.1",
-    "electron-debug": "^1.4.0",
-    "electron-devtools-installer": "^2.2.0",
     "eslint": "^4.4.1",
     "eslint-config-airbnb-base": "^11.2.0",
+    "electron-debug": "^1.4.0",
+    "electron-devtools-installer": "^2.2.0",
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-import-resolver-webpack": "^0.8.1",
     "eslint-loader": "^1.9.0",
