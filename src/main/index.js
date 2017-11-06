@@ -50,6 +50,10 @@ app.on('window-all-closed', () => {
   }
 });
 
+process.on('uncaughtException', error => {
+  sendStatusToWindow(error.toString()); // eslint-disable-line
+});
+
 app.on('activate', () => {
   if (mainWindow === null) {
     createWindow();
@@ -151,7 +155,7 @@ app.on('ready', () => {
   if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates();
 });
 
-app.on('will-quit', () => {
+app.on('will-quit', event => {
   if (pendingDownload) {
     event.preventDefault();
     downloadAndUpdateApp();
