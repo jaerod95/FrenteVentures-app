@@ -116,7 +116,7 @@ autoUpdater.on('update-available', () => {
       message:
         'A new Version of FrenteVentures Application is available, download and install now?',
       defaultId: 0,
-      buttons: ['Download and Install', 'Install on Quit'],
+      buttons: ['Download and Install'],
     },
     buttonIndex => {
       if (buttonIndex === 0) downloadAndUpdateApp();
