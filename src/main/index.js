@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog } from 'electron'; // eslint-disable-line
+import { app, BrowserWindow, dialog, Menu } from 'electron'; // eslint-disable-line
 import { autoUpdater } from 'electron-updater';
 
 /**
@@ -31,14 +31,18 @@ function createWindow() {
 
   mainWindow.loadURL(winURL);
 
-  mainWindow.webContents.openDevTools();
-
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
 }
 
-app.on('ready', createWindow);
+app.on('ready', () => {
+  createWindow();
+
+  console.log(getMenu); // eslint-disable-line
+
+  Menu.setApplicationMenu(Menu.buildFromTemplate(getMenu())); // eslint-disable-line
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -51,6 +55,10 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+/**
+ * Setup Menu
+ */
 
 /**
  * Auto Updater
@@ -149,3 +157,90 @@ app.on('will-quit', () => {
     downloadAndUpdateApp();
   }
 });
+
+// UTIL FUNCTIONS
+
+function getMenu() {
+  const template = [
+    {
+      label: 'Edit',
+      submenu: [
+        { role: 'undo' },
+        { role: 'redo' },
+        { type: 'separator' },
+        { role: 'cut' },
+        { role: 'copy' },
+        { role: 'paste' },
+        { role: 'pasteandmatchstyle' },
+        { role: 'delete' },
+        { role: 'selectall' },
+      ],
+    },
+    {
+      label: 'View',
+      submenu: [
+        { role: 'reload' },
+        { role: 'forcereload' },
+        { role: 'toggledevtools' },
+        { type: 'separator' },
+        { role: 'resetzoom' },
+        { role: 'zoomin' },
+        { role: 'zoomout' },
+        { type: 'separator' },
+        { role: 'togglefullscreen' },
+      ],
+    },
+    {
+      role: 'window',
+      submenu: [{ role: 'minimize' }, { role: 'close' }],
+    },
+    {
+      role: 'help',
+      submenu: [
+        {
+          label: 'Learn More',
+          click() {
+            require('electron').shell.openExternal('https://electron.atom.io'); // eslint-disable-line
+          },
+        },
+      ],
+    },
+  ];
+
+  if (process.platform === 'darwin') {
+    template.unshift({
+      label: app.getName(),
+      submenu: [
+        { role: 'about' },
+        { type: 'separator' },
+        { role: 'services', submenu: [] },
+        { type: 'separator' },
+        { role: 'hide' },
+        { role: 'hideothers' },
+        { role: 'unhide' },
+        { type: 'separator' },
+        { role: 'quit' },
+      ],
+    });
+
+    // Edit menu
+    template[1].submenu.push(
+      { type: 'separator' },
+      {
+        label: 'Speech',
+        submenu: [{ role: 'startspeaking' }, { role: 'stopspeaking' }],
+      },
+    );
+
+    // Window menu
+    template[3].submenu = [
+      { role: 'close' },
+      { role: 'minimize' },
+      { role: 'zoom' },
+      { type: 'separator' },
+      { role: 'front' },
+    ];
+  }
+
+  return template;
+}
