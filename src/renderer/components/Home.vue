@@ -194,7 +194,7 @@ export default {
                 const date = val.End.split('/');
                 const newTask = {
                   Name: val.Title,
-                  Due: `20${date[2]}-${date[0]}-${date[1]}`,
+                  Due: `20${date[2].split(',')[0]}-${date[0]}-${date[1]}`,
                   Project: [project.id],
                   Completed: parseInt(val['%Done'].split('%')[0], 10),
                 };

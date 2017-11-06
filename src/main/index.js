@@ -69,9 +69,22 @@ const sendStatusToWindow = text => {
 function downloadAndUpdateApp() {
   if (!updateWindow) {
     updateWindow = new BrowserWindow({
-      height: 563,
+      height: 200,
       useContentSize: true,
-      width: 1000,
+      width: 500,
+    });
+
+    updateWindow.loadURL(
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:9080#/utils/update-loading-view'
+        : `file://${__dirname}/index.html#/utils/update-loading-view`,
+    );
+
+    updateWindow.on('closed', () => {
+      updateWindow = null;
+    });
+    updateWindow.once('ready-to-show', () => {
+      updateWindow.show();
     });
   }
   if (downloadFinished) {
@@ -114,6 +127,9 @@ autoUpdater.on('download-progress', progressObj => {
   sendStatusToWindow(
     `Download speed: ${progressObj.bytesPerSecond} - Downloaded ${progressObj.percent}%`,
   );
+  if (updateWindow) {
+    updateWindow.webContents.send('progress', progressObj.percent);
+  }
 });
 
 autoUpdater.on('update-downloaded', () => {
